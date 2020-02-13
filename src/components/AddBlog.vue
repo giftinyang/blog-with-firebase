@@ -7,9 +7,9 @@
             <input type="text" v-model.lazy="blogs.title" required />
             <label> Blog Content:</label>
             <textarea v-model.lazy="blogs.content"></textarea>
-            <label>Author:</label>
+            <label>Category:</label>
             <select v-model="blogs.author">
-                <option v-for="author in authors" :key="author">{{author}}</option>
+                <option v-for="category in categories" :key="category">{{category}}</option>
                 
             </select>
             <div>
@@ -24,8 +24,9 @@
             <p>Blog title: {{ blog.title }}</p>
             <p>Blog content:</p>
             <p>{{ blog.content }}</p>
-            <p>{{blog.author}}</p>
+            <p>{{blog.category}}</p>
             <button @click="deletePost(blog.id)">Delete</button>
+             <button @click="editPost(blog)">Edit</button>
         </div>
     </div>
   </div>
@@ -46,7 +47,7 @@ export default {
             },
             blogPost: [],
 
-            authors:['The Net Ninja', 'The Angular Avenger', 'The Vue Vindicator'],
+            categories:['Personal', 'Work', 'Education', 'Social', 'Sport',],
             show: false,
             hide: true,
         }
@@ -57,7 +58,7 @@ export default {
             axios.post('https://blog-firebase-34205.firebaseio.com/data.json', this.blogs)
             swal({
                 title: "Good job!",
-                text: "You clicked the button!",
+                text: "Your story has been successfully added!",
                 icon: "success",
                 button: "Aww yiss!",
             })
@@ -81,6 +82,22 @@ export default {
         deletePost(i){
             console.log(i)
             axios.delete(`https://blog-firebase-34205.firebaseio.com/data/${i}.json`)
+            swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this imaginary file!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                    if (willDelete) {
+                        swal("Poof! Your imaginary file has been deleted!", {
+                        icon: "success",
+                        });
+                    } else {
+                        swal("Your imaginary file is safe!");
+                    }
+                    })
             .then(function(res){
                 console.log(res)
             }, function(error){
