@@ -20,13 +20,31 @@
     <div v-if="hide">
         <button @click="togglePost">Add a New Blog Post</button>
         <div id="preview" v-for="(blog, index) in blogPost" :key="index">
-            <h3>Preview Blog</h3>
-            <p>Blog title: {{ blog.title }}</p>
-            <p>Blog content:</p>
-            <p>{{ blog.content }}</p>
-            <p>{{blog.category}}</p>
-            <button @click="deletePost(blog.id)">Delete</button>
-             <button @click="editPost(blog)">Edit</button>
+            <div v-if="display">
+                <h3>Preview Blog</h3>
+                <p>Blog title: {{ blog.title }}</p>
+                <p>Blog content:</p>
+                <p>{{ blog.content }}</p>
+                <p>{{blog.category}}</p>
+                <button @click="deletePost(blog.id)">Delete</button>
+                <button @click="editPost(blog)">Edit</button>
+            </div>
+             <div v-else>
+                 <form @submit.prevent>
+                    <label> Blog Title:</label>
+                    <input type="text" v-model.lazy="blogs.title" required />
+                    <label> Blog Content:</label>
+                    <textarea v-model.lazy="blogs.content"></textarea>
+                    <label>Category:</label>
+                    <select v-model="blogs.author">
+                        <option v-for="category in categories" :key="category">{{category}}</option>
+                        
+                    </select>
+                    <div>
+                    <button @click.prevent="updatePost(blog.id)">Update</button>
+                    </div>
+                </form>
+             </div>
         </div>
     </div>
   </div>
@@ -50,30 +68,39 @@ export default {
             categories:['Personal', 'Work', 'Education', 'Social', 'Sport',],
             show: false,
             hide: true,
+            display: true
         }
     },
     methods:{
         submitPost(){
-            this.blogPost.push(this.blogs);
-            axios.post('https://blog-firebase-34205.firebaseio.com/data.json', this.blogs)
-            swal({
-                title: "Good job!",
-                text: "Your story has been successfully added!",
-                icon: "success",
-                button: "Aww yiss!",
-            })
-            .then(function(res){
-                console.log(res)
-            }, function(error){
-                console.log(error)
-            })
-            this. blogs = {
-                title:"",
-                content:"",
-                author: ""
+            if(this.blogs.title === ''|| this.blogs.content === ''|| this.blogs.author === '' ){
+               swal("Error!", "Please fill in all fields!", "error");
+            }else{
+                this.blogPost.push(this.blogs);
+                            axios.post('https://blog-firebase-34205.firebaseio.com/data.json', this.blogs)
+                            swal({
+                                title: "Good job!",
+                                text: "Your story has been successfully added!",
+                                icon: "success",
+                                button: "Aww yiss!",
+                            })
+                            .then(function(res){
+                                console.log(res)
+                            }, function(error){
+                                console.log(error)
+                            })
+                            this. blogs = {
+                                title:"",
+                                content:"",
+                                author: ""
+                            }
+                            this.show = false
+                            this.hide = true
             }
-            this.show = false
-            this.hide = true
+        },
+        editPost(id){
+            this.display = false
+            this.blogs = id
         },
         togglePost(){
             this.show = true
@@ -103,6 +130,15 @@ export default {
             }, function(error){
                 console.log(error)
             })
+        },
+        updatePost(i){
+            axios.put(`https://blog-firebase-34205.firebaseio.com/data/${i}.json` , this.blogs)
+            .then(function(res){
+                console.log(res)
+            }, function(error){
+                console.log(error)
+            })
+            
         }
     },
     created(){
