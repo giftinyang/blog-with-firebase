@@ -1,7 +1,7 @@
 <template>
   <div id="add">
     <div v-if="show">
-        <h1>Add a New Blog Post</h1>
+        <h1>New Blog Post</h1>
         <form>
             <label> Blog Title:</label>
             <input type="text" v-model.lazy="blogs.title" required />
@@ -138,7 +138,7 @@ export default {
             }, function(error){
                 console.log(error)
             })
-            
+
         }
     },
     created(){
