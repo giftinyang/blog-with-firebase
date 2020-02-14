@@ -19,17 +19,7 @@
     </div>
     <div v-if="hide">
         <button @click="togglePost">Add a New Blog Post</button>
-        <div id="preview" v-for="(blog, index) in blogPost" :key="index">
-            <div v-if="display">
-                <h3>Preview Blog</h3>
-                <p>Blog title: {{ blog.title }}</p>
-                <p>Blog content:</p>
-                <p>{{ blog.content }}</p>
-                <p>{{blog.category}}</p>
-                <button @click="deletePost(blog.id)">Delete</button>
-                <button @click="editPost(blog)">Edit</button>
-            </div>
-             <div v-else>
+         <div v-if="disp">
                  <form @submit.prevent>
                     <label> Blog Title:</label>
                     <input type="text" v-model.lazy="blogs.title" required />
@@ -41,10 +31,20 @@
                         
                     </select>
                     <div>
-                    <button @click.prevent="updatePost(blog.id)">Update</button>
+                    <button @click.prevent="updatePost(blogs.id)">Update</button>
                     </div>
                 </form>
              </div>
+        <div id="preview" v-for="(blog, index) in blogPost" :key="index">
+            <div v-if="display">
+                <h3>Preview Blog</h3>
+                <p>Blog title: {{ blog.title }}</p>
+                <p>Blog content:</p>
+                <p>{{ blog.content }}</p>
+                <p>{{blog.category}}</p>
+                <button @click="deletePost(blog.id)">Delete</button>
+                <button @click="editPost(blog)">Edit</button>
+            </div>
         </div>
     </div>
   </div>
@@ -68,7 +68,8 @@ export default {
             categories:['Personal', 'Work', 'Education', 'Social', 'Sport',],
             show: false,
             hide: true,
-            display: true
+            display: true,
+            disp: false
         }
     },
     methods:{
@@ -100,6 +101,7 @@ export default {
         },
         editPost(id){
             this.display = false
+            this.disp = true
             this.blogs = id
         },
         togglePost(){
@@ -159,6 +161,7 @@ export default {
 </script>
 
 <style>
+
 #add *{
     box-sizing: border-box;
 
@@ -166,6 +169,7 @@ export default {
 #add{
     margin: 20px auto;
     max-width: 500px;
+    /* background-image: url('../../public/') */
 }
 label{
     display: block;
